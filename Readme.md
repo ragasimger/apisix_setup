@@ -72,7 +72,12 @@ It is designed for developers who want a reproducible way to:
 
 1. **Clone the repo**
    ```bash
-   git clone https://github.com/<your-username>/apisix-docker-setup.git
+   git clone git@github.com:ragasimger/apisix_setup.git
+   cd apisix-docker-setup
+   ```
+   or
+   ```bash
+   git clone https://github.com/ragasimger/apisix_setup
    cd apisix-docker-setup
    ```
 
