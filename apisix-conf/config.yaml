@@ -1,0 +1,20 @@
+apisix:
+  node_listen: 9080
+  
+deployment:
+  admin:
+    allow_admin:
+      - 0.0.0.0/0
+    # admin_key:
+    #   - name: ${ADMIN_NAME}
+    #     key: ${X_API_KEY}
+    #     role: ${ADMIN_ROLE}
+    admin_key:
+      - name: admin
+        key: edd1c9f034335f136f87eweeewewewwad84fde43rerb625c8f1
+        role: admin
+  etcd:
+    host:
+      - http://etcd:2379
+    prefix: "/apisix"
+    timeout: 30
