@@ -1,0 +1,14 @@
+conf:
+  listen:
+    port: ${DASHBOARD_LISTEN_PORT}
+
+  etcd:
+    endpoints:
+      - etcd:${DASHBOARD_ETCD_PORT}
+      
+authentication:
+  secret: ${X_API_KEY}
+  expire_time: ${DASHBOARD_EXPIRE_TIME}
+  users:
+    - username: ${DASHBOARD_USERNAME}
+      password: ${DASHBOARD_PASSWORD}

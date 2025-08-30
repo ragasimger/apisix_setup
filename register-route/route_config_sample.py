@@ -1,6 +1,6 @@
 from configs import CONFIG_DICT as config
 
-route_configs = [
+ROUTE_CONFIGS = [
     {
         "uri": "/api/v1/auth-app/*",
         "methods": ["GET","POST","OPTIONS"],

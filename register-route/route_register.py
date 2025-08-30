@@ -1,7 +1,6 @@
-import json
 import requests
 from configs import CONFIG_DICT
-from route_config import ROUTE_CONFIGS
+from route_config_sample import ROUTE_CONFIGS
 
 # ANSI color codes
 GREEN = "\033[92m"

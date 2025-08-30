@@ -1,35 +1,34 @@
-
-configs:
-  apisix_config:
-    file: ./apisix-conf/config.yaml
-  dashboard_config:
-    file: ./dashboard-conf/conf.yaml
-
-
 services:
   # Etcd Instance
   etcd:
     image: bitnami/etcd:3.5.17
     container_name: etcd
     environment:
-      ALLOW_NONE_AUTHENTICATION: yes
-      ETCD_ADVERTISE_CLIENT_URLS: http://etcd:2379
-      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
     ports:
       - "2379:2379"
-
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD", "etcdctl", "--endpoints=http://127.0.0.1:2379", "endpoint", "health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   # APISIX Instance
   apisix:
-    image: apache/apisix:3.13.0-debian
+    build:
+    # Why Build?
+    # Because we need to use envsubst to change the environment variables from .env
+      context: ./apisix-conf
+      dockerfile: Dockerfile
     container_name: apisix
     restart: always
     depends_on:
-      - etcd
-    volumes:
-      - ./apisix-conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+      etcd:
+        condition: service_healthy
     ports:
       - "9080:9080/tcp"
       - "9091:9091/tcp" # Admin API port
@@ -39,27 +38,26 @@ services:
 
     env_file:
       - .env
-
-
-    configs:
-      - source: apisix_config
-        target: /usr/local/apisix/conf/config.yaml
-
+    environment:
+      - ADMIN_NAME=${ADMIN_NAME}
+      - X_API_KEY=${X_API_KEY}
+      - ADMIN_ROLE=${ADMIN_ROLE}
 
   # APISIX Dashboard
   apisix-dashboard:
-    image: apache/apisix-dashboard:3.0.0-alpine
+    build:
+    # Why Build?
+    # Because we need to use envsubst to change the environment variables from .env
+      context: ./dashboard-conf
+      dockerfile: Dockerfile
     container_name: apisix-dashboard
     restart: always
     depends_on:
-      - apisix
-      - etcd
-    volumes:
-      - ./dashboard-conf/conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml:ro
+      etcd:
+        condition: service_healthy
+      apisix:
+        condition: service_started
     ports:
       - "9000:9000"
-    configs:
-      - source: dashboard_config
-        target: /usr/local/apisix-dashboard/conf/conf.yaml
     env_file:
       - .env

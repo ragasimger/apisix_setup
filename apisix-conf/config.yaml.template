@@ -1,0 +1,17 @@
+apisix:
+  node_listen: ${APISIX_NODE_LISTEN_PORT}
+
+deployment:
+  admin:
+    allow_admin:
+      - 0.0.0.0/0
+    admin_key:
+      - name: ${ADMIN_NAME}
+        key: ${X_API_KEY}
+        role: ${ADMIN_ROLE}
+
+  etcd:
+    host:
+      - http://etcd:2379
+    prefix: "/apisix"
+    timeout: 30
